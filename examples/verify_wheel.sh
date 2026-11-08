@@ -11,8 +11,8 @@ python - <<'PY'
 import importlib,pkgutil,partslab
 mods=sorted(m.name for m in pkgutil.walk_packages(partslab.__path__,partslab.__name__+'.'))
 for m in mods:importlib.import_module(m)
-assert len(mods)==7,mods
-print('all eight package modules including root imported outside checkout')
+assert len(mods)==9,mods
+print('all ten package modules including root imported outside checkout')
 PY
 python -m partslab train --out models.json --guard guard.json
 python -m partslab evaluate --models models.json --guard guard.json --out report.json
@@ -29,6 +29,13 @@ json.dump({'pixels':[1.,1.],'basis':[[1.,0.],[0.,1.]],'coefficients':[1.,0.]},op
 PY
 python -m partslab certify --problem problem.json --out certificate.json
 python -m partslab verify-certificate --witness certificate.json >verified.json
+python - <<'PYFACE'
+import json
+json.dump({'pixels':[.5,.5],'basis':[[1.,1.],[1.,0.]],'support':[0],'pixel':0},open('face-problem.json','w'))
+PYFACE
+python -m partslab face --problem face-problem.json --out face.json
+python -m partslab verify-face --witness face.json >face-verified.json
+python -m partslab face-export --out face-reference.json
 python - "$source_root" <<'PY'
 import json,sys,numpy as np
 from pathlib import Path
@@ -51,5 +58,7 @@ assert json.load(open('demo.json'))['test_rows']==1797
 assert json.load(open('verified.json'))['verified']
 from partslab.certificate import verify
 artifact=json.load(open(source/'certificates.json'));assert all(verify(w) for w in artifact['controls'])
-print('all seven installed CLIs, six complete refits, fixed holdout, controls and frozen guard pass')
+assert json.load(open('face-verified.json'))['verified']
+assert json.load(open('face-reference.json'))==json.load(open(source/'face-reference.json'))
+print('all ten installed CLIs, six complete refits, fixed holdout, controls and frozen guard pass')
 PY
