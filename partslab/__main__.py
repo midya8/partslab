@@ -2,6 +2,7 @@ import argparse
 from .io import ROOT,read,write,dumps
 from .experiment import train,evaluate,predict,PROTOCOL
 from .audit import controls
+from .certificate import certify,verify
 
 def main():
     p=argparse.ArgumentParser();s=p.add_subparsers(dest='command',required=True)
@@ -9,11 +10,18 @@ def main():
     e=s.add_parser('evaluate');e.add_argument('--models',default=str(ROOT/'artifacts/models.json'));e.add_argument('--guard',default=str(ROOT/'artifacts/guard.json'));e.add_argument('--out',required=True)
     q=s.add_parser('predict');q.add_argument('--pixels',required=True);q.add_argument('--rank',type=int,choices=PROTOCOL['ranks'],default=16);q.add_argument('--out',required=True);q.add_argument('--models',default=str(ROOT/'artifacts/models.json'))
     a=s.add_parser('audit');a.add_argument('--out',required=True)
+    c=s.add_parser('certify');c.add_argument('--problem',required=True);c.add_argument('--out',required=True)
+    v=s.add_parser('verify-certificate');v.add_argument('--witness',required=True)
     s.add_parser('demo');args=p.parse_args()
     if args.command=='train':m,g=train();write(args.out,m);write(args.guard,g)
     elif args.command=='evaluate':write(args.out,evaluate(read(args.models),read(args.guard)))
     elif args.command=='predict':write(args.out,predict(read(args.pixels),read(args.models),args.rank))
     elif args.command=='audit':write(args.out,controls())
+    elif args.command=='certify':
+        problem=read(args.problem);write(args.out,certify(problem['pixels'],problem['basis'],problem['coefficients']))
+    elif args.command=='verify-certificate':
+        if not verify(read(args.witness)):p.error('invalid exact fixed-basis certificate')
+        print(dumps({'verified':True,'scope':'fixed-basis NNLS only; embedded problem origin not authenticated'}))
     else:
         r=read(ROOT/'artifacts/report.json');print(dumps({'test_rows':r['test_rows'],'mean_mse':r['mean_mse'],'arms':{k:{'chosen_seed':v['chosen_seed'],'chosen_nmf_mse':next(x['mse'] for x in v['nmf_runs'] if x['seed']==v['chosen_seed']),'pca_mse':v['pca_mse'],'svd_mse':v['svd_mse']} for k,v in r['arms'].items()}}))
 if __name__=='__main__':main()
