@@ -21,7 +21,7 @@
   $('query-status').textContent=`Certified delta ≈ ${text(t)}. Pixel ≈ ${text(F.add(PartsCertificate.binaryRatio(w.problem.pixels[w.problem.pixel]),t))}. All exact KKT signs pass.`;$('query-status').dataset.kind='valid';
   $('query-summary').textContent=`${active.length} strictly positive coefficients at this delta. ½ squared-error global optimum for this fixed basis, not for the jointly fitted NMF problem.`;
   const canvas=$('coefficients');canvas.width=Math.max(240,Math.min(520,Math.floor(canvas.parentElement.clientWidth-42)));const cw=canvas.width,ctx=canvas.getContext('2d'),vals=c.map(approximate),max=Math.max(1,...vals);ctx.fillStyle='#172b38';ctx.fillRect(0,0,cw,320);const width=(cw-40)/c.length;
-  ctx.fillStyle='#9ccedd';vals.forEach((v,k)=>ctx.fillRect(20+k*width,280-240*v/max,Math.max(2,width-4),240*v/max));ctx.fillStyle='#f3f1e6';ctx.font='14px monospace';ctx.fillText(`coefficient scale 0 to ${max.toPrecision(4)}`,20,20);vals.forEach((v,k)=>{if(k%(cw<400?(c.length>16?4:2):(c.length>16?2:1))===0)ctx.fillText(String(k),20+k*width,298);});paintDigit(w,t);
+  ctx.fillStyle='#9ccedd';vals.forEach((v,k)=>ctx.fillRect(20+k*width,280-240*v/max,Math.max(2,width-4),240*v/max));ctx.fillStyle='#f3f1e6';ctx.font='14px monospace';ctx.fillText(`scale: 0 to ${max.toPrecision(4)}`,20,20);vals.forEach((v,k)=>{if(k%(cw<400?(c.length>16?4:2):(c.length>16?2:1))===0)ctx.fillText(String(k),20+k*width,298);});paintDigit(w,t);
   window.PARTS_FACE_STATE={...applied,delta:F.serial(t),coefficients:c.map(F.serial)};
  }
  function render(message){
