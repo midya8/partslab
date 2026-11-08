@@ -4,6 +4,17 @@ from .experiment import train,evaluate,predict,PROTOCOL
 from .audit import controls
 from .certificate import certify,verify
 
+def read_face(path):
+    import json
+    def unique(items):
+        out={}
+        for key,value in items:
+            if key in out:raise ValueError('duplicate JSON key: '+key)
+            out[key]=value
+        return out
+    with open(path) as stream:
+        return json.load(stream,object_pairs_hook=unique,parse_constant=lambda value:(_ for _ in ()).throw(ValueError('nonfinite JSON')))
+
 def main():
     p=argparse.ArgumentParser();s=p.add_subparsers(dest='command',required=True)
     t=s.add_parser('train');t.add_argument('--out',required=True);t.add_argument('--guard',required=True)
@@ -12,6 +23,9 @@ def main():
     a=s.add_parser('audit');a.add_argument('--out',required=True)
     c=s.add_parser('certify');c.add_argument('--problem',required=True);c.add_argument('--out',required=True)
     v=s.add_parser('verify-certificate');v.add_argument('--witness',required=True)
+    f=s.add_parser('face');f.add_argument('--problem',required=True);f.add_argument('--out',required=True)
+    fv=s.add_parser('verify-face');fv.add_argument('--witness',required=True)
+    fe=s.add_parser('face-export');fe.add_argument('--out',required=True)
     s.add_parser('demo');args=p.parse_args()
     if args.command=='train':m,g=train();write(args.out,m);write(args.guard,g)
     elif args.command=='evaluate':write(args.out,evaluate(read(args.models),read(args.guard)))
@@ -22,6 +36,16 @@ def main():
     elif args.command=='verify-certificate':
         if not verify(read(args.witness)):p.error('invalid exact fixed-basis certificate')
         print(dumps({'verified':True,'scope':'fixed-basis NNLS only; embedded problem origin not authenticated'}))
+    elif args.command=='face':
+        from .face import response
+        q=read_face(args.problem);write(args.out,response(q['pixels'],q['basis'],q['support'],q['pixel']))
+    elif args.command=='verify-face':
+        from .face import verify as verify_face
+        if not verify_face(read_face(args.witness)):p.error('invalid exact fixed-face witness')
+        print(dumps({'verified':True,'scope':'fixed-basis candidate only; embedded problem origin not authenticated'}))
+    elif args.command=='face-export':
+        from .face_export import export
+        write(args.out,export())
     else:
         r=read(ROOT/'artifacts/report.json');print(dumps({'test_rows':r['test_rows'],'mean_mse':r['mean_mse'],'arms':{k:{'chosen_seed':v['chosen_seed'],'chosen_nmf_mse':next(x['mse'] for x in v['nmf_runs'] if x['seed']==v['chosen_seed']),'pca_mse':v['pca_mse'],'svd_mse':v['svd_mse']} for k,v in r['arms'].items()}}))
 if __name__=='__main__':main()
