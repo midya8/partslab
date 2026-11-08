@@ -18,7 +18,7 @@ test('real Chrome:54 exact face workers, endpoint queries, source binding, stale
   await call('Page.enable');await call('Page.navigate',{url:target});
   async function ready(){for(let i=0;i<1500;i++){const s=await js(`document.getElementById('status')?.textContent||''`);if(s.startsWith('Exact face verified'))return;if(s==='Worker error.'||s==='Refused without repair.')throw Error(await js(`document.getElementById('error').textContent`));await delay(20);}throw Error('face worker timeout');}
   await ready();
-  const native=JSON.parse(fs.readFileSync(path.join(__dirname,'../partslab/artifacts/face-reference.json'),'utf8'));
+  const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../partslab/artifacts/face-reference.json'),'utf8')),native={...manifest,cases:manifest.shards.flatMap(name=>JSON.parse(fs.readFileSync(path.join(__dirname,'../partslab/artifacts',name),'utf8')).cases)};
   for(const c of native.cases){
    await js(`document.getElementById('problem').value='source';document.getElementById('problem').dispatchEvent(new Event('change'));document.getElementById('rank').value='${c.rank}';document.getElementById('run').value='${c.run}';document.getElementById('row').value='${c.row}';document.getElementById('pixel').value='${c.pixel}';document.getElementById('apply').click()`);await ready();
    assert.deepEqual(await js(`PARTS_FACE_STATE.witness`),c.witness);
