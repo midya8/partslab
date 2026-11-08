@@ -11,8 +11,8 @@ python - <<'PY'
 import importlib,pkgutil,partslab
 mods=sorted(m.name for m in pkgutil.walk_packages(partslab.__path__,partslab.__name__+'.'))
 for m in mods:importlib.import_module(m)
-assert len(mods)==6,mods
-print('all seven package modules including root imported outside checkout')
+assert len(mods)==7,mods
+print('all eight package modules including root imported outside checkout')
 PY
 python -m partslab train --out models.json --guard guard.json
 python -m partslab evaluate --models models.json --guard guard.json --out report.json
@@ -23,6 +23,12 @@ import json
 json.dump([0.]*64,open('pixels.json','w'))
 PY
 python -m partslab predict --pixels pixels.json --out predict.json
+python - <<'PY'
+import json
+json.dump({'pixels':[1.,1.],'basis':[[1.,0.],[0.,1.]],'coefficients':[1.,0.]},open('problem.json','w'))
+PY
+python -m partslab certify --problem problem.json --out certificate.json
+python -m partslab verify-certificate --witness certificate.json >verified.json
 python - "$source_root" <<'PY'
 import json,sys,numpy as np
 from pathlib import Path
@@ -42,5 +48,8 @@ for name in ['models','report','audit']:close(json.load(open(name+'.json')),json
 models=json.load(open('models.json'));guard=json.load(open('guard.json'));assert guard['models_sha256']==digest(models)
 p=json.load(open('predict.json'));assert p['nmf_mse']==0 and p['nnls_converged'] and p['nnls_sweeps']==0
 assert json.load(open('demo.json'))['test_rows']==1797
-print('all five installed CLIs, six complete refits, fixed holdout, controls and frozen guard pass')
+assert json.load(open('verified.json'))['verified']
+from partslab.certificate import verify
+artifact=json.load(open(source/'certificates.json'));assert all(verify(w) for w in artifact['controls'])
+print('all seven installed CLIs, six complete refits, fixed holdout, controls and frozen guard pass')
 PY
