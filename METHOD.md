@@ -65,3 +65,8 @@ Established algorithms and limits, not algorithmic novelty or a reproduction of 
 ## v0.2 separate fixed-basis certificates
 
 The numerical residuals and all original artifacts above remain unchanged. The live inspector now also constructs an exact primal/dual bound for its supplied fixed-basis NNLS problem, including unfinished solves. This does not upgrade the joint NMF fits to global optima or imply unique coefficients. See [CERTIFICATE.md](CERTIFICATE.md) for the weak-duality proof, exact binary64 arithmetic, independent verifier, coverage and limits.
+
+
+## Exact fixed-face response (v0.3)
+
+See [FACE.md](FACE.md) for one-pixel affine NNLS candidates, exact KKT half-line intersections and all limiting ties. Original models/data/results remain unchanged. Numeric coefficients nominate the face; exact normal equations produce a different candidate that must pass exact starting KKT. A nominated singular block refuses construction. Closed weak-KKT intervals do not claim unchanged strict support, uniqueness, a full active-set solution path or robustness. The supplied-binary64 mathematical verifier is not source authentication.
