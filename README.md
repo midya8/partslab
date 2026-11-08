@@ -19,7 +19,7 @@ python examples/export_browser.py
 python examples/render_audit.py
 ```
 
-Open `docs/index.html` locally. The browser solves new nonnegative coefficients for arbitrary edited 8x8 pixels. It shows every part's actual contribution, a rescaled basis view, coefficient weights, unclipped reconstruction errors, signed PCA/SVD/mean controls, every fit's descent and exact JSON copy/download. No server, uploads, analytics or remote calls. Twenty original official test rows are included by index, not selected for success. The package has five CLIs: `demo`, `train`, `evaluate`, `predict`, `audit`.
+Try the [live parts inspector](https://midya8.github.io/partslab/), or open `docs/index.html` locally. The browser solves new nonnegative coefficients for arbitrary edited 8x8 pixels. It shows every part's actual contribution, a rescaled basis view, coefficient weights, unclipped reconstruction errors, signed PCA/SVD/mean controls, every fit's descent and exact JSON copy/download. No server, uploads, analytics or remote calls. Twenty original official test rows are included by index, not selected for success. The package has five CLIs: `demo`, `train`, `evaluate`, `predict`, `audit`.
 
 ## Constraints have a cost
 
