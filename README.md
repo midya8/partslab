@@ -19,7 +19,13 @@ python examples/export_browser.py
 python examples/render_audit.py
 ```
 
-Try the [live parts inspector](https://midya8.github.io/partslab/), or open `docs/index.html` locally. The browser solves new nonnegative coefficients for arbitrary edited 8x8 pixels. It shows every part's actual contribution, a rescaled basis view, coefficient weights, unclipped reconstruction errors, signed PCA/SVD/mean controls, every fit's descent and exact JSON copy/download. No server, uploads, analytics or remote calls. Twenty original official test rows are included by index, not selected for success. The package has five CLIs: `demo`, `train`, `evaluate`, `predict`, `audit`.
+Try the [live parts inspector](https://midya8.github.io/partslab/), or open `docs/index.html` locally. The browser solves new nonnegative coefficients for arbitrary edited 8x8 pixels. It shows every part's actual contribution, a rescaled basis view, coefficient weights, unclipped reconstruction errors, signed PCA/SVD/mean controls, every fit's descent and exact JSON copy/download. No server, uploads, analytics or remote calls. Twenty original official test rows are included by index, not selected for success. The package has seven CLI subcommands: `demo`, `train`, `evaluate`, `predict`, `audit`, `certify`, `verify-certificate`.
+
+## v0.2: an exact bound for the fixed-basis solve
+
+A stopping residual is not an objective-gap bound. The browser now constructs and checks a separate exact primal/dual witness over the actual supplied binary64 pixels, basis and coefficients. It displays an outward-rounded interval for the fixed-basis optimum and a bound on candidate suboptimality, including at zero inference sweeps. Portable JSON proofs can be pasted into the browser checker or checked by an independent Python `Fraction` verifier. A residual-shift witness can be loose. This is not joint NMF optimality, unique coefficients, semantic identification or source authentication.
+
+[Certificate proof, arithmetic, controls, CLI usage and limits](CERTIFICATE.md). All original fits, holdout scores, selection protocol and frozen guards are unchanged. The 120 exact reference witnesses cover the twenty already-public examples for six models, not all holdout rows.
 
 ## Constraints have a cost
 
@@ -45,6 +51,6 @@ All 1,797 official test rows. Training-mean baseline MSE: 0.0735163. Scores use 
 
 ## Verification
 
-21 Python tests and four Node/real-Chrome tests. Independent active-set NNLS enumeration on 35 tiny random problems, finite-difference gradients, scalar coordinate/objective references, zero/duplicate/budget cases, full six-fit reproduction forbidding test access, frozen hashes before evaluation, all-row holdout/control reproduction, and exact SVG regeneration. Browser checks compare 120 native/scalar-JavaScript decompositions, 2,048 actual contribution pixels, arbitrary edits, keyboard controls, copy failure/success, download, and expanded 320/390/1280 layouts. Installed-wheel checks import seven modules and execute all five CLIs outside the checkout, including full training and holdout reproduction.
+30 Python tests and eight Node/real-Chrome tests. Independent active-set NNLS enumeration on 35 tiny random problems, finite-difference gradients, scalar coordinate/objective references, zero/duplicate/budget cases, full six-fit reproduction forbidding test access, frozen hashes before evaluation, all-row holdout/control reproduction, and exact SVG regeneration. Exact certificates add 80 independent rational active-set optima, a sum-of-squares gap identity, subnormal/rounding/tamper controls and 120 cross-language exact witness reproductions. Browser checks compare 120 native/scalar-JavaScript decompositions, 2,048 actual contribution pixels, arbitrary edits, keyboard controls, zero-sweep unfinished bounds, valid/tampered pasted proofs, copy failure/success, download, and expanded 320/390/1280 layouts. Installed-wheel checks import eight modules and execute all seven CLIs outside the checkout, including full training and holdout reproduction.
 
 Original data: Alpaydin & Kaynak (1998), [UCI Optical Recognition of Handwritten Digits](https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits), CC BY 4.0. Original source hashes and license are in `partslab/data/`. Derived bases and summaries are new transformations. Code MIT. Established algorithms, original implementation; no endorsement.
