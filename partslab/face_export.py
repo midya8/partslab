@@ -25,3 +25,14 @@ def export():
     return {'schema':1,'models_sha256':digest(models),
             'candidate_sha256':digest(read(ROOT/'artifacts/certificate-candidates.json')),
             'cases':cases,'controls':controls}
+
+
+def reference():
+    manifest = read(ROOT/'artifacts/face-reference.json')
+    out = {k:v for k,v in manifest.items() if k!='shards'}
+    out['cases'] = []
+    for filename in manifest['shards']:
+        if filename not in [f'face-reference-{rank}-{run}'+('' if row is None else f'-{row}')+'.json' for rank in [8,16,32] for run in [0,1] for row in ([None] if rank<32 else [0,1,2])]:
+            raise ValueError('unexpected reference shard')
+        out['cases'].extend(read(ROOT/'artifacts'/filename)['cases'])
+    return out
