@@ -1,9 +1,8 @@
 import copy,itertools,json,math,random,unittest
 from fractions import Fraction as F
 from partslab.certificate import certify,verify,decimal_bound
-from partslab.io import ROOT,read
+from partslab.io import ROOT,read,digest
 from partslab.data import load
-from partslab.experiment import predict
 
 
 def solve_linear(a,y):
@@ -73,9 +72,10 @@ class CertificateTests(unittest.TestCase):
         for x,b,c in [([],[[]],[0]),([1],[[1,0]],[0]),([1],[[1]],[math.nan]),([1],[[-1]],[0]),([True],[[1]],[0]),(['1'],[[1]],[0])]:
             with self.assertRaises(ValueError):certify(x,b,c)
     def test_120_saved_exact_witnesses_and_five_controls_reproduce(self):
-        artifact=read(ROOT/'artifacts/certificates.json');m=read(ROOT/'artifacts/models.json');x=load('test')[:20];self.assertEqual(len(artifact['cases']),120)
-        for case in artifact['cases']:
-            rank=str(case['rank']);ri=case['run'];i=case['row'];temp=copy.deepcopy(m);temp['arms'][rank]['chosen']=ri;p=predict(x[i],temp,int(rank));w=certify(x[i],m['arms'][rank]['runs'][ri]['basis'],p['coefficients']);self.assertTrue(verify(w));del w['problem'];self.assertEqual(w,case['certificate'])
+        artifact=read(ROOT/'artifacts/certificates.json');m=read(ROOT/'artifacts/models.json');x=load('test')[:20];self.assertEqual(len(artifact['cases']),120);candidates=read(ROOT/'artifacts/certificate-candidates.json');self.assertEqual(len(candidates['cases']),120)
+        bundle=json.loads((ROOT.parent/'docs/data.js').read_text().removeprefix('globalThis.PARTS_DATA=').strip().removesuffix(';'));self.assertEqual(candidates['reference_sha256'],digest(bundle['reference']))
+        for case,candidate in zip(artifact['cases'],candidates['cases']):
+            rank=str(case['rank']);ri=case['run'];i=case['row'];self.assertEqual({k:case[k] for k in ['rank','run','row']},{k:candidate[k] for k in ['rank','run','row']});self.assertEqual(candidate['coefficients'],bundle['reference'][rank][ri][i]['coefficients']);w=certify(x[i],m['arms'][rank]['runs'][ri]['basis'],candidate['coefficients']);self.assertTrue(verify(w));del w['problem'];self.assertEqual(w,case['certificate'])
         self.assertEqual(len(artifact['controls']),5);self.assertTrue(all(verify(w) for w in artifact['controls']))
 
 if __name__=='__main__':unittest.main()
