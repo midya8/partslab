@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs');
-const face=require('../docs/face.js'),native=JSON.parse(fs.readFileSync('partslab/artifacts/face-reference.json','utf8'));
+const face=require('../docs/face.js'),manifest=JSON.parse(fs.readFileSync('partslab/artifacts/face-reference.json','utf8')),native={...manifest,cases:manifest.shards.flatMap(name=>JSON.parse(fs.readFileSync('partslab/artifacts/'+name,'utf8')).cases)};
 test('all54 complete native Fraction responses match scalar BigInt including limits',()=>{
  assert.equal(native.cases.length,54);
  for(const c of native.cases){const w=c.witness,p=w.problem,actual=face.response(p.pixels,p.basis,p.support,p.pixel);assert.deepEqual(actual,w);assert(face.verify(w));}
