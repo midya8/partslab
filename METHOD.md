@@ -60,3 +60,8 @@ Established algorithms and limits, not algorithmic novelty or a reproduction of 
 4. [scikit-learn decomposition guide](https://scikit-learn.org/stable/modules/decomposition.html), section2.5.7: solver choices, zero-lock and nonconvexity caveats. Documentation reference only, not a runtime dependency.
 5. [scikit-learn NMF API](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html): factor objective, normalization conventions and coordinate/multiplicative solver scope. This code does not wrap it.
 6. [UCI Optical Recognition of Handwritten Digits](https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits), Alpaydin & Kaynak(1998): original source, official split and CC BY4.0 attribution. Original files/hash/license included. Derived bases and summaries are new transformations. MIT original code; no endorsement.
+
+
+## v0.2 separate fixed-basis certificates
+
+The numerical residuals and all original artifacts above remain unchanged. The live inspector now also constructs an exact primal/dual bound for its supplied fixed-basis NNLS problem, including unfinished solves. This does not upgrade the joint NMF fits to global optima or imply unique coefficients. See [CERTIFICATE.md](CERTIFICATE.md) for the weak-duality proof, exact binary64 arithmetic, independent verifier, coverage and limits.
