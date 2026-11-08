@@ -72,9 +72,9 @@ class FaceTests(unittest.TestCase):
         self.assertEqual(count,200)
 
     def test_all54_source_bound_native_exports(self):
-        from partslab.face_export import export
+        from partslab.face_export import export,reference
         from partslab.io import ROOT,read
-        self.assertEqual(export(),read(ROOT/'artifacts/face-reference.json'))
+        self.assertEqual(export(),reference())
 
     def test_subnormal_and_binary64_not_decimal(self):
         for v in [math.ulp(0.),2.**-1022,.1]:
