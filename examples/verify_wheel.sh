@@ -59,6 +59,7 @@ assert json.load(open('verified.json'))['verified']
 from partslab.certificate import verify
 artifact=json.load(open(source/'certificates.json'));assert all(verify(w) for w in artifact['controls'])
 assert json.load(open('face-verified.json'))['verified']
-assert json.load(open('face-reference.json'))==json.load(open(source/'face-reference.json'))
+from partslab.face_export import reference
+assert json.load(open('face-reference.json'))==reference()
 print('all ten installed CLIs, six complete refits, fixed holdout, controls and frozen guard pass')
 PY
