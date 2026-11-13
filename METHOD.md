@@ -1,8 +1,8 @@
-# Parts without identification
+# Factorization method and limits
 
 ## Scope and fixed protocol
 
-PartsLab v0.1 fits original UCI optdigits pixels (64 integer counts /16) without labels. It preserves the original 3,823 training and 1,797 test rows and source hashes. The loader verifies source hashes/shape/range and deliberately never returns labels. All model fitting reads only training pixels; a test-loader prohibition is exercised during the complete refit. The original files retain their labels for provenance, not fitting.
+The original PartsLab experiment fits original UCI optdigits pixels (64 integer counts /16) without labels. It preserves the original 3,823 training and 1,797 test rows and source hashes. The loader verifies source hashes/shape/range and deliberately never returns labels. All model fitting reads only training pixels; a test-loader prohibition is exercised during the complete refit. The original files retain their labels for provenance, not fitting.
 
 Fixed ranks 8,16,32; seeds 11,23; random positive initial factors; 100 outer iterations; three cyclic coefficient sweeps then three cyclic basis sweeps; unit-L2-norm nonzero basis rows after each outer iteration, with the inverse scaling applied to coefficients. The joint stopping threshold is `1e-5 * max(1, initial coefficient PG infinity norm, initial basis PG infinity norm)` in this normalization gauge. All six fits exhaust the 100-iteration budget. This is not a claim of stationarity or a preferred production budget.
 
@@ -38,7 +38,7 @@ For target `[1,1]`, identity basis and coefficients `[1,0]`, the plain multiplic
 
 Training-mean reconstruction is constant. Centered PCA computes an SVD of `X_train - mean_train`; reconstruction is `mean + (x-mean) V_k.T V_k`. Uncentered SVD uses `x V_k.T V_k` from the raw training SVD. Both signed controls use the same k as NMF. PCA has an extra mean vector; the comparison is rank-matched, not parameter matched or equal compute. No whitened coordinates. Test scores use the full raw reconstructed vectors, including negative or >1 entries, with no clamp. Display canvases alone clip. Each basis atlas independently rescales that vector by its maximum and says so; contribution images use a common [0,1] scale. Summing contributions uses the unscaled basis.
 
-The official held-out mean MSE is 0.0735163327. Training-chosen NMF MSEs for ranks8/16/32 are 0.0309683010/0.0163995953/0.0046791296; corresponding PCA MSEs are 0.0251266658/0.0118775534/0.0027689070; SVD MSEs are 0.0257206087/0.0119639018/0.0027681384. Both signed controls are lower on this dataset/protocol. All six per-row scores and solver residuals remain public, including nonselected seeds. No confidence intervals, paired significance, recognition, perceptual quality or general superiority claim. Model and report hashes bind which fixed fits produced the numbers.
+The official held-out mean MSE is 0.0735163327. Training-chosen NMF MSEs for ranks 8/16/32 are 0.0309683010/0.0163995953/0.0046791296; corresponding PCA MSEs are 0.0251266658/0.0118775534/0.0027689070; SVD MSEs are 0.0257206087/0.0119639018/0.0027681384. Both signed controls are lower on this dataset/protocol. All six per-row scores and solver residuals remain public, including nonselected seeds. No confidence intervals, paired significance, recognition, perceptual quality or general superiority claim. Model and report hashes bind which fixed fits produced the numbers.
 
 ## Independent evidence
 
@@ -47,8 +47,8 @@ The official held-out mean MSE is 0.0735163327. Training-chosen NMF MSEs for ran
 - An independent support-enumeration NNLS oracle solves 35 tiny random problems using least-squares on independent supports, comparing optimal objectives to coordinate inference. It does not reuse Gram-coordinate updates. A conic projection has an independent-support representation, so singular supersets need not be inverted.
 - Zero data, zero basis, duplicate bases, scale/permutation, boundary movement, invalid inputs, zero budgets, monotone histories and nonconvergence states are checked.
 - Full six-fit reproduction forbids test-loader access. Frozen guards reject mutations before evaluation. All 1,797 holdout/control scores are independently reproduced. PCA orthogonality and residual projection are checked; negative raw reconstructions prove scoring is not silently clamped.
-- 120 complete native/JavaScript decompositions agree within 2e-10, including coefficients, reconstructions, signed controls, numerical residuals and sweep counts. Chrome exercises every visible model/example combination, all 2,048 pixels in 32 contribution canvases, custom pixel edits, keyboard, basis controls, copy failures/success, download, expanded layouts and minimum44px targets at320/390/1280 widths.
-- 21 Python and four Node/Chrome tests; installed wheel imports seven modules and executes five CLIs, refits all six models and reproduces the holdout outside the checkout. Refit comparisons allow 2e-9 absolute plus2e-8 relative binary64 variation; frozen-file hashes are exact. SVG generation from frozen data is byte-exact. No timing or throughput benchmark.
+- 120 complete native/JavaScript decompositions agree within 2e-10, including coefficients, reconstructions, signed controls, numerical residuals and sweep counts. Chrome exercises every visible model/example combination, all 2,048 pixels in 32 contribution canvases, custom pixel edits, keyboard, basis controls, copy failures/success, download, expanded layouts and minimum 44px targets at 320/390/1280 widths.
+- The original release had 21 Python and four Node/Chrome tests, with seven installed modules and five CLI commands. The current suite has 38 Python and eleven Node/Chrome tests; installed checks import ten modules and execute ten CLI commands, refit all six models and reproduce the holdout outside the checkout. Refit comparisons allow 2e-9 absolute plus 2e-8 relative binary64 variation; frozen-file hashes are exact. SVG generation from frozen data is byte-exact. No timing or throughput benchmark.
 
 ## Sources
 
@@ -62,11 +62,11 @@ Established algorithms and limits, not algorithmic novelty or a reproduction of 
 6. [UCI Optical Recognition of Handwritten Digits](https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits), Alpaydin & Kaynak(1998): original source, official split and CC BY4.0 attribution. Original files/hash/license included. Derived bases and summaries are new transformations. MIT original code; no endorsement.
 
 
-## v0.2 separate fixed-basis certificates
+## Separate fixed-basis certificates
 
-The numerical residuals and all original artifacts above remain unchanged. The live inspector now also constructs an exact primal/dual bound for its supplied fixed-basis NNLS problem, including unfinished solves. This does not upgrade the joint NMF fits to global optima or imply unique coefficients. See [CERTIFICATE.md](CERTIFICATE.md) for the weak-duality proof, exact binary64 arithmetic, independent verifier, coverage and limits.
+The numerical residuals and all original artifacts above remain unchanged. The live inspector also constructs an exact primal/dual bound for its supplied fixed-basis NNLS problem, including unfinished solves. This does not upgrade the joint NMF fits to global optima or imply unique coefficients. See [CERTIFICATE.md](CERTIFICATE.md) for the weak-duality proof, exact binary64 arithmetic, independent verifier, coverage and limits.
 
 
-## Exact fixed-face response (v0.3)
+## Exact fixed-face response
 
 See [FACE.md](FACE.md) for one-pixel affine NNLS candidates, exact KKT half-line intersections and all limiting ties. Original models/data/results remain unchanged. Numeric coefficients nominate the face; exact normal equations produce a different candidate that must pass exact starting KKT. A nominated singular block refuses construction. Closed weak-KKT intervals do not claim unchanged strict support, uniqueness, a full active-set solution path or robustness. The supplied-binary64 mathematical verifier is not source authentication.

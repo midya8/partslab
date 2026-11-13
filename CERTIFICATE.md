@@ -1,6 +1,6 @@
 # Exact fixed-basis NNLS objective bounds
 
-PartsLab v0.2 adds a separate primal/dual certificate. The numerical solver and its KKT stopping rule are unchanged. An exact certificate is computed for its candidate coefficients, including when the numerical solver stops unfinished.
+The inspector constructs a separate primal/dual certificate. The numerical solver and its KKT stopping rule are unchanged. An exact certificate is computed for its candidate coefficients, including when the numerical solver stops unfinished.
 
 This certifies the convex coefficient problem for a **fixed** basis. It does not certify joint NMF optimality, unique coefficients, semantic parts, model quality or the origin of an imported problem. All six joint fits still exhaust their original stationarity budget. All original models, scores, training protocol and frozen guards are unchanged.
 
@@ -66,7 +66,7 @@ Invalid proofs return a nonzero CLI exit status. Changing a feasible problem and
 - All 120 already-public model/example pairs have native exact witness references in `partslab/artifacts/certificates.json`. A separate JavaScript BigInt implementation reproduces those witnesses exactly using the **same native candidate coefficients**, stored separately in `certificate-candidates.json` and checked against the unchanged browser reference hash. Fresh NumPy runs are checked numerically by the original refit suite, not required to reproduce every coefficient bit across platforms. These are twenty fixed public examples for six models, not a gap audit of all 1,797 holdout rows.
 - Real Chrome computes and verifies certificates for its own 120 numerical candidates. It tests the zero-sweep unfinished control, accepts a valid pasted proof, rejects a tampered gap, and retains the original contribution, input, keyboard, copy/download and responsive-layout checks.
 
-The complete suite is 30 Python tests and eight Node/real-Chrome tests. The installed wheel imports eight modules and executes all seven CLI subcommands outside the source checkout, including all six refits and the original holdout reproduction.
+The certificate release had 30 Python tests and eight Node/real-Chrome tests, with eight installed modules and seven CLI commands. The current suite has 38 Python and eleven Node/real-Chrome tests; installed checks import ten modules and run all ten CLI commands outside the source checkout, including all six refits and the original holdout reproduction.
 
 ## Sources and attribution
 

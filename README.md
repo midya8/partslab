@@ -1,8 +1,12 @@
 # PartsLab
 
-**Add without subtracting.**
+PartsLab fits nonnegative basis images and coefficients to the original
+licensed UCI digits using NumPy. Edit an 8x8 image in the browser to see each
+basis image's contribution and the reconstruction error. The signed PCA and
+SVD controls stay visible, including their lower errors at every fixed rank.
 
-Manual NumPy nonnegative matrix factorization on the original licensed UCI digits. Six complete fits, numerical KKT stopping, fixed-basis NNLS inference, rank-matched signed controls, and an editable browser decomposition. No scikit-learn, model APIs or training labels.
+The project retains all six fits, numerical stopping checks and independent
+fixed-basis checks. It uses no scikit-learn, model APIs or training labels.
 
 ![Sixteen nonnegative basis vectors, held-out signed controls and a zero-locking counterexample](assets/parts-audit.svg)
 
@@ -19,15 +23,23 @@ python examples/export_browser.py
 python examples/render_audit.py
 ```
 
-Try the [live parts inspector](https://midya8.github.io/partslab/), or open `docs/index.html` locally. The browser solves new nonnegative coefficients for arbitrary edited 8x8 pixels. It shows every part's actual contribution, a rescaled basis view, coefficient weights, unclipped reconstruction errors, signed PCA/SVD/mean controls, every fit's descent and exact JSON copy/download. No server, uploads, analytics or remote calls. Twenty original official test rows are included by index, not selected for success. The package has seven CLI subcommands: `demo`, `train`, `evaluate`, `predict`, `audit`, `certify`, `verify-certificate`.
+Try the [live parts inspector](https://midya8.github.io/partslab/), or open `docs/index.html` locally. The browser solves new nonnegative coefficients for arbitrary edited 8x8 pixels. It shows every part's actual contribution, a rescaled basis view, coefficient weights, unclipped reconstruction errors, signed PCA/SVD/mean controls, every fit's descent and exact JSON copy/download. No server, uploads, analytics or remote calls. Twenty original official test rows are included by index, not selected for success. The package has ten CLI subcommands: `demo`, `train`, `evaluate`, `predict`, `audit`, `certify`, `verify-certificate`, `face`, `verify-face`, `face-export`.
 
-## v0.2: an exact bound for the fixed-basis solve
+## Three fixed-basis calculations
 
-A stopping residual is not an objective-gap bound. The browser now constructs and checks a separate exact primal/dual witness over the actual supplied binary64 pixels, basis and coefficients. It displays an outward-rounded interval for the fixed-basis optimum and a bound on candidate suboptimality, including at zero inference sweeps. Portable JSON proofs can be pasted into the browser checker or checked by an independent Python `Fraction` verifier. A residual-shift witness can be loose. This is not joint NMF optimality, unique coefficients, semantic identification or source authentication.
+The original inspector solves new nonnegative coefficients numerically for a
+frozen basis. The certificate inspector bounds that solve's objective gap with
+an exact primal/dual witness. The fixed-face inspector varies one pixel and
+checks an affine coefficient candidate on its exact validity interval. Neither
+exact check makes the joint NMF training problem globally solved.
+
+## Exact bounds for the fixed-basis solve
+
+A stopping residual is not an objective-gap bound. The browser constructs and checks a separate exact primal/dual witness over the actual supplied binary64 pixels, basis and coefficients. It displays an outward-rounded interval for the fixed-basis optimum and a bound on candidate suboptimality, including at zero inference sweeps. Portable JSON proofs can be pasted into the browser checker or checked by an independent Python `Fraction` verifier. A residual-shift witness can be loose. This is not joint NMF optimality, unique coefficients, semantic identification or source authentication.
 
 [Certificate proof, arithmetic, controls, CLI usage and limits](CERTIFICATE.md). All original fits, holdout scores, selection protocol and frozen guards are unchanged. The 120 exact reference witnesses cover the twenty already-public examples for six models, not all holdout rows.
 
-## Constraints have a cost
+## Fixed-rank reconstruction results
 
 Every arm uses all 3,823 original training images, ranks 8/16/32, seeds 11/23, and 100 outer iterations with three coefficient/basis sweeps each. Within each rank, minimum **training-only reencoded MSE** selects a seed. All six runs remain public. There is no holdout-based rank or iteration choice.
 
@@ -39,7 +51,7 @@ Every arm uses all 3,823 original training images, ranks 8/16/32, seeds 11/23, a
 
 All 1,797 official test rows. Training-mean baseline MSE: 0.0735163. Scores use raw, **unclipped** reconstructions. Images alone clip to [0,1]. The signed controls win at every fixed rank, and remain visible. PCA stores a mean as well as its rank-k components, so rank matching is not exact parameter matching. This is a fixed-data reconstruction audit, not perceptual quality, recognition accuracy, causal interpretability or broad model superiority.
 
-## Descent is not convergence
+## Descent and stopping checks
 
 - Each scalar coordinate update minimizes a bounded quadratic. Explicit gradients, projected-gradient residuals and every outer loss are saved. No epsilon is silently added to zero denominators; zero basis rows are handled as flat directions.
 - **All six joint NMF fits exhaust the stated budget without meeting their joint stationarity tolerance.** The browser says so. Monotone loss does not prove stationarity, a local minimum or a global optimum. Numeric residuals are not exact certificates.
@@ -56,10 +68,10 @@ All 1,797 official test rows. Training-mean baseline MSE: 0.0735163. Scores use 
 Original data: Alpaydin & Kaynak (1998), [UCI Optical Recognition of Handwritten Digits](https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits), CC BY 4.0. Original source hashes and license are in `partslab/data/`. Derived bases and summaries are new transformations. Code MIT. Established algorithms, original implementation; no endorsement.
 
 
-## v0.3: exact fixed-face pixel response
+## Exact fixed-face pixel response
 
 [Open the fixed-face inspector](docs/face.html) · [Math, controls and reproduction](FACE.md)
 
 Nominate an NNLS face from a frozen numeric solution, then re-solve and check it exactly for the supplied binary64 basis and pixels. One pixel varies along a bounded line. Every affine coefficient/inactive-gradient inequality defines its maximal candidate-validity interval, with all endpoint ties and singleton cases explicit. BigInt construction and verification run in a Worker; source selection, invalid-query retention, exact endpoint queries and downloadable witnesses stay inspectable.
 
-The native Fraction and scalar browser implementations match 54 complete source responses across all six frozen bases, with independent determinant/Cramer tiny-system oracles, all120 source nominations, actual Chrome Workers and pixel checks. Original fits, data, score tables, certificates and stronger signed PCA/SVD controls are unchanged. This is not a full solution path, unchanged strict support, uniqueness, robustness, semantics or joint-NMF optimality. Singular selected blocks refuse construction; verification checks supplied affine candidates without solving.
+The native Fraction and scalar browser implementations match 54 complete source responses across all six frozen bases, with independent determinant/Cramer tiny-system oracles, all 120 source nominations, actual Chrome Workers and pixel checks. Original fits, data, score tables, certificates and stronger signed PCA/SVD controls are unchanged. This is not a full solution path, unchanged strict support, uniqueness, robustness, semantics or joint-NMF optimality. Singular selected blocks refuse construction; verification checks supplied affine candidates without solving.
