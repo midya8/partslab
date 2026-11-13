@@ -1,6 +1,6 @@
-# PartsLab v0.3: one face, one pixel
+# Exact fixed-face pixel response
 
-The fixed-basis NNLS problem is convex. The fitted NMF problem is not jointly convex. This addition certifies a nominated affine NNLS candidate, never a jointly optimal NMF fit, a unique coefficient vector, a whole solution path or a robustness radius.
+The fixed-basis NNLS problem is convex. The fitted NMF problem is not jointly convex. The fixed-face inspector certifies a nominated affine NNLS candidate, never a jointly optimal NMF fit, a unique coefficient vector, a whole solution path or a robustness radius.
 
 The original six bases, data/splits, coordinate-descent solver, numerical KKT stopping warnings, reconstruction results, original exact weak-duality witnesses and stronger signed PCA/SVD controls are unchanged. No new performance result is reported.
 
@@ -59,8 +59,8 @@ The small-system oracle uses an independent determinant/Cramer enumeration, not 
 ## Sources and scope differences
 
 - [Boyd and Vandenberghe, Convex Optimization](https://stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf), textbook background on convex least-squares. The fetched introduction is not used as evidence for unseen later sections.
-- [Gould, Parametric quadratic programming, revisited](https://www.numerical.rl.ac.uk/media/reports/gNAGIR20042.pdf), section2: working-set affine solutions, limiting primal/dual conditions and degeneracies. We do not implement its full continuation algorithm.
+- [Gould, Parametric quadratic programming, revisited](https://www.numerical.rl.ac.uk/media/reports/gNAGIR20042.pdf), section 2: working-set affine solutions, limiting primal/dual conditions and degeneracies. We do not implement its full continuation algorithm.
 - [Bemporad, QP via NNLS](https://cse.lab.imtlucca.it/~bemporad/publications/papers/ieeetac-qpnnls.pdf), active-set and numerical-tolerance context. We do not implement that solver or inherit its complexity guarantees.
-- [Feller, Johansen and Olaru, combinatorial multi-parametric QP](https://torarnj.folk.ntnu.no/satMatPruning_final.pdf), section2.1: KKT, affine response and critical-region inequalities. Its strict-convexity/LICQ results do not grant uniqueness to our possibly singular full NNLS problem.
+- [Feller, Johansen and Olaru, combinatorial multi-parametric QP](https://torarnj.folk.ntnu.no/satMatPruning_final.pdf), section 2.1: KKT, affine response and critical-region inequalities. Its strict-convexity/LICQ results do not grant uniqueness to our possibly singular full NNLS problem.
 - [Stanford convex optimization introduction](https://web.stanford.edu/class/ee364a/lectures/intro.pdf), explicit nonnegative least-squares formulation.
 - [SciPy nnls documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.nnls.html), convex NNLS and numerical active-set KKT background. SciPy is not an implementation dependency.
